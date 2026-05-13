@@ -32,6 +32,7 @@ class ExplainWorker(QThread):
             for chunk in stream:
                 if self._stopped:
                     break
+                # Ollama SDK returns objects (newer) or dicts (older) — handle both
                 if hasattr(chunk, "response"):
                     token = chunk.response or ""
                 elif isinstance(chunk, dict):
@@ -101,6 +102,8 @@ class AIEngine:
 def fetch_available_models() -> list[str]:
     try:
         result = ollama.list()
+        # Newer ollama SDK returns an object with .models attribute
+        # Older versions return a dict with "models" key — handle both
         if hasattr(result, "models"):
             models = result.models
             return [m.model for m in models if hasattr(m, "model")]

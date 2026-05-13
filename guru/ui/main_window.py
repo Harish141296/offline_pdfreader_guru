@@ -221,7 +221,7 @@ class MainWindow(QMainWindow):
             self._next_btn.setEnabled(True)
             self._zoom_in_btn.setEnabled(True)
             self._zoom_out_btn.setEnabled(True)
-            self.setWindowTitle(f"Guru — {self._reader.file_name}")
+            self.setWindowTitle(f"Sage — {self._reader.file_name}")
             self.statusBar().showMessage(
                 f"Opened: {self._reader.file_name}  |  "
                 f"{self._reader.page_count} pages"
@@ -229,11 +229,11 @@ class MainWindow(QMainWindow):
         else:
             self.statusBar().showMessage("Failed to open PDF.")
 
-    @pyqtSlot(int)
-    def _on_page_changed(self, page_num: int) -> None:
-        total = self._reader.page_count
-        self._page_label.setText(f"{page_num + 1} / {total}")
-        self._zoom_label.setText(f"{self._viewer.zoom_percent}%")
+    @pyqtSlot(int, int, int)
+    def _on_page_changed(self, current: int, total: int, zoom_pct: int) -> None:
+        """current is already 1-based from PDFViewer signal."""
+        self._page_label.setText(f"{current} / {total}")
+        self._zoom_label.setText(f"{zoom_pct}%")
 
     @pyqtSlot()
     def _on_explain_requested(self) -> None:
@@ -259,17 +259,28 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(str)
     def _on_ask_requested(self, question: str) -> None:
-        if not self._reader.is_open or not self._sidebar.last_response:
+        if not self._reader.is_open:
+            self._sidebar.show_error("Please open a PDF first.")
             return
 
         result = self._extractor.extract(self._viewer.current_page)
-        page_label = self._reader.get_page_label(self._viewer.current_page)
-        self._sidebar.start_streaming(f"{page_label} — Follow-up")
+        if not result.is_usable:
+            self._sidebar.show_error(result.status_message)
+            return
 
+        # Capture prior explanation BEFORE start_streaming() clears the display
+        # If user hasn't explained the page yet, prior will be "" — that's fine,
+        # the prompt template handles it gracefully
+        prior = self._sidebar.last_response
+
+        page_label = self._reader.get_page_label(self._viewer.current_page)
+        self._sidebar.start_streaming(f"{page_label} — Q&A")
+
+        self._ai.set_model(self._sidebar.selected_model)
         self._ai.ask(
             result=result,
             question=question,
-            prior_explanation=self._sidebar.last_response,
+            prior_explanation=prior,
             on_token=self._sidebar.append_token,
             on_done=self._sidebar.finish_streaming,
             on_error=self._sidebar.show_error,
@@ -278,12 +289,10 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def _on_zoom_in(self) -> None:
         self._viewer.zoom_in()
-        self._zoom_label.setText(f"{self._viewer.zoom_percent}%")
 
     @pyqtSlot()
     def _on_zoom_out(self) -> None:
         self._viewer.zoom_out()
-        self._zoom_label.setText(f"{self._viewer.zoom_percent}%")
 
     # ── Ollama health check ───────────────────────────────────
 
