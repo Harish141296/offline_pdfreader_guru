@@ -1,8 +1,5 @@
 # Offline PDF Reader Guru
 
-<p align="center">
-  <img src="docs/banner.png" alt="Sage Banner" width="700"/>
-</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10+-blue?style=flat-square&logo=python" />
@@ -13,7 +10,7 @@
 </p>
 
 > **Every expert wrote a book. Not everyone can afford a tutor.**
-> Sage sits beside you as you read — simplifying every page in plain language, privately, with zero internet required.
+> Guru sits beside you as you read — simplifying every page in plain language, privately, with zero internet required.
 
 ---
 
@@ -21,7 +18,7 @@
 
 Technical books like *Designing Machine Learning Systems*, *Clean Code*, or *The Pragmatics of Programming* are written by experts — for experts. Beginners buy these books and hit a wall on page 10. They can't afford tutors. Online explanations are scattered and shallow.
 
-**Sage solves this.** Open any PDF. Hit one button. Get a clear, faithful explanation of exactly what you're reading — powered by a local LLM running entirely on your machine.
+**Guru solves this.** Open any PDF. Hit one button. Get a clear, faithful explanation of exactly what you're reading — powered by a local LLM running entirely on your machine.
 
 ---
 
@@ -43,7 +40,7 @@ Technical books like *Designing Machine Learning Systems*, *Clean Code*, or *The
 
 ```
 ┌─────────────────────────────────────────────┐
-│                  Sage App                   │
+│                  Guru App                   │
 │                                             │
 │  ┌──────────────┐    ┌────────────────────┐ │
 │  │  PDF Viewer  │    │   AI Sidebar       │ │
@@ -77,7 +74,7 @@ python --version
 ollama pull mistral
 ```
 
-### 2. Install Sage
+### 2. Install Guru
 
 ```bash
 git clone https://github.com/Harish141296/offline_pdfreader_guru.git
@@ -129,17 +126,17 @@ scripts\build_windows.bat
 bash scripts/build_linux.sh
 ```
 
-Output: `dist/sage.exe` (Windows) or `dist/sage` (Linux)
+Output: `dist/guru.exe` (Windows) or `dist/guru` (Linux)
 
 ---
 
 ## 🗂️ Project Structure
 
 ```
-sage/
+guru/
 ├── main.py                  # Entry point
 ├── requirements.txt
-├── sage/
+├── guru/
 │   ├── core/
 │   │   ├── pdf_reader.py    # PyMuPDF wrapper
 │   │   ├── extractor.py     # Text extraction
