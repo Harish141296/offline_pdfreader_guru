@@ -1,0 +1,21 @@
+# Sage — Python dependencies
+# Install with: pip install -r requirements.txt
+
+# GUI framework
+PyQt6>=6.6.0
+
+# PDF rendering and text extraction
+PyMuPDF>=1.23.0
+
+# Ollama Python SDK (local LLM)
+ollama>=0.1.8
+
+# Utilities
+requests>=2.31.0
+
+# Testing
+pytest>=7.4.0
+pytest-qt>=4.2.0
+
+# Build (optional — for packaging to .exe)
+# pyinstaller>=6.3.0
